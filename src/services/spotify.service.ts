@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import SpotifyWebApi from 'spotify-web-api-node';
+import { IMusicService } from './service.interface.js';
 
 @Injectable()
-export class SpotifyService {
+export class SpotifyService implements IMusicService {
   private spotifyApi: SpotifyWebApi;
   private tokenExpiresAt: number;
   private accessToken: string;
@@ -35,7 +36,7 @@ export class SpotifyService {
     this.spotifyApi.setAccessToken(this.accessToken);
   }
 
-  async searchTrack(artist: string, title: string): Promise<string> {
+  async searchTrack(artist: string, title: string): Promise<string | null> {
     try {
       await this.ensureAccessToken();
     } catch (err) {
@@ -48,7 +49,7 @@ export class SpotifyService {
       if (result && result.body.tracks && result.body.tracks.items.length > 0) {
         return result.body.tracks.items[0].external_urls.spotify;
       } else {
-        throw new Error('Track not found');
+        return null;
       }
     } catch (err) {
       console.error('Error searching tracks:', err);

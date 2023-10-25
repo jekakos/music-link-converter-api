@@ -5,12 +5,13 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
+import { IMusicService } from './service.interface.js';
 
 @Injectable()
-export class YandexMusicService {
+export class YandexMusicService implements IMusicService {
   constructor(private readonly configService: ConfigService) {}
 
-  async searchTrack(artist: string, title: string): Promise<string> {
+  async searchTrack(artist: string, title: string): Promise<string | null> {
     const internalServiceUrl = this.configService.get<string>(
       'INTERNAL_YANDEXMUSIC_SERVICE_URL',
     );
@@ -32,7 +33,7 @@ export class YandexMusicService {
       if (response && response.data && response.data.track_url) {
         return response.data.track_url;
       } else {
-        throw new NotFoundException('Track not found');
+        return null;
       }
     } catch (error) {
       console.error('Error fetching track from Yandex Music:', error);
