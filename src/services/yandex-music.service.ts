@@ -76,8 +76,8 @@ export class YandexMusicService implements IMusicService {
       response.data.title
     ) {
       return {
-        artist: response.data.artist,
-        title: response.data.title,
+        artist: response.data.artist.trim(),
+        title: response.data.title.trim(),
       };
     }
 

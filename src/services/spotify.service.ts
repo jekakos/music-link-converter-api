@@ -43,9 +43,13 @@ export class SpotifyService implements IMusicService {
       console.log('Something went wrong when retrieving an access token', err);
     }
 
-    const query = `artist:${artist} track:${title}`;
+    const query = `${artist} - ${title}`;
+    console.log('Spotify query: ', query);
+    console.log('Token: ', this.accessToken);
+
     try {
       const result = await this.spotifyApi.searchTracks(query);
+      console.log('Results: ', result.body);
       if (result && result.body.tracks && result.body.tracks.items.length > 0) {
         return result.body.tracks.items[0].external_urls.spotify;
       } else {
@@ -83,5 +87,10 @@ export class SpotifyService implements IMusicService {
       throw new Error('Invalid Spotify URL');
     }
     return match[1];
+  }
+
+  private cleanTrackTitle(title: string): string {
+    title = title.replace(/[^a-zA-Z0-9 \-]/g, '');
+    return title;
   }
 }

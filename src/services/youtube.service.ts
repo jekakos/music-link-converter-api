@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import { IMusicService } from './service.interface.js';
+import he from 'he';
 
 @Injectable()
 export class YoutubeMusicService implements IMusicService {
@@ -60,6 +61,7 @@ export class YoutubeMusicService implements IMusicService {
 
       const query = `${videoId}`;
       const info = await this.search(query);
+      console.log('Youtube info: ', info);
       if (info && 'snippet' in info && info.snippet.title) {
         const cleanTitle = this.cleanTrackTitle(info.snippet.title);
         console.log('Title: ', cleanTitle);
@@ -71,8 +73,8 @@ export class YoutubeMusicService implements IMusicService {
         }
 
         return {
-          artist: titleMatch[1],
-          title: titleMatch[2],
+          artist: titleMatch[1].trim(),
+          title: titleMatch[2].trim(),
         };
       }
     } catch (error) {
@@ -82,11 +84,12 @@ export class YoutubeMusicService implements IMusicService {
   }
 
   private cleanTrackTitle(title: string): string {
-    title = title.replace(/&quot;/g, '');
-    title = title.replace(/&amp;/g, '&');
+    title = he.decode(title);
+    //title = title.replace(/&quot;/g, '');
+    //title = title.replace(/&amp;/g, '&');
 
     // Удаление всех символов, которые не являются буквами, цифрами, пробелами, тире
-    title = title.replace(/[^a-zA-Z0-9 \-]/g, '');
+    title = title.replace(/[^a-zA-Z0-9 \-'`&]/g, '');
 
     return title;
   }
