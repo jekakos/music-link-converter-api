@@ -29,8 +29,12 @@ export class YandexMusicService implements IMusicService {
       }).catch(() => {
         throw new ForbiddenException('API not available');
       });
+      console.log('Yandex Search Response: ', response.data);
 
       if (response && response.data && response.data.track_url) {
+        if (response.data.artist != artist) {
+          throw new Error('Cannot find track');
+        }
         return response.data.track_url;
       } else {
         return null;

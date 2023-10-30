@@ -6,6 +6,7 @@ export class CommonService {
     if (link.includes('spotify.com')) return 'spotify';
     if (link.includes('music.yandex')) return 'yandex-music';
     if (link.includes('music.youtube')) return 'youtube-music';
+    if (link.includes('music.apple.com')) return 'apple-music';
 
     throw Error('Platform not detected');
   }

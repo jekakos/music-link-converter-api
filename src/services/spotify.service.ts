@@ -70,7 +70,7 @@ export class SpotifyService implements IMusicService {
     console.log('Track ID: ', trackId);
 
     const data = await this.spotifyApi.getTrack(trackId);
-    console.log('Track Data: ', data);
+    //console.log('Track Data: ', data);
 
     const artist = data.body.artists[0].name;
     const title = data.body.name;

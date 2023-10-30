@@ -12,6 +12,7 @@ import { YandexMusicService } from './services/yandex-music.service.js';
 import { CommonService } from './services/common.service.js';
 import { Response } from 'express';
 import { YoutubeMusicService } from './services/youtube.service.js';
+import { AppleMusicService } from './services/apple-music.service.js';
 
 @Controller()
 export class AppController {
@@ -20,18 +21,19 @@ export class AppController {
     private readonly spotifyService: SpotifyService,
     private readonly yandexService: YandexMusicService,
     private readonly youtubeService: YoutubeMusicService,
+    private readonly appleService: AppleMusicService,
   ) {}
 
   @Get('search_track')
   async getTrack(
-    @Query('platform') platform: string,
+    @Query('to_platform') to_platform: string,
     @Query('artist') artist: string,
     @Query('title') title: string,
   ): Promise<string | null> {
-    if (!platform)
+    if (!to_platform)
       throw new BadRequestException('Parameter platform must be defind');
 
-    switch (platform) {
+    switch (to_platform) {
       case 'spotify': {
         return await this.spotifyService.searchTrack(artist, title);
       }
@@ -41,8 +43,11 @@ export class AppController {
       case 'youtube-music': {
         return await this.youtubeService.searchTrack(artist, title);
       }
+      case 'apple-music': {
+        return await this.appleService.searchTrack(artist, title);
+      }
     }
-    throw new NotFoundException('Cannot find platform ' + platform);
+    throw new NotFoundException('Cannot find platform ' + to_platform);
   }
 
   @Get('get_link')
@@ -75,6 +80,11 @@ export class AppController {
           info = await this.youtubeService.getTrackInfo(link);
         }
         break;
+      case 'apple-music':
+        {
+          info = await this.appleService.getTrackInfo(link);
+        }
+        break;
     }
 
     if (!info || !info.artist || !info.title)
@@ -89,6 +99,9 @@ export class AppController {
       }
       case 'youtube-music': {
         return await this.youtubeService.searchTrack(info.artist, info.title);
+      }
+      case 'apple-music': {
+        return await this.appleService.searchTrack(info.artist, info.title);
       }
     }
 

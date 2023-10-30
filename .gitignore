@@ -40,3 +40,5 @@ lerna-debug.log*
 
 # Swagger
 swagger.json
+
+*.p8
