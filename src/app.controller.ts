@@ -33,6 +33,9 @@ export class AppController {
     if (!to_platform)
       throw new BadRequestException('Parameter platform must be defind');
 
+    artist = decodeURIComponent(artist);
+    title = decodeURIComponent(artist);
+
     switch (to_platform) {
       case 'spotify': {
         return await this.spotifyService.searchTrack(artist, title);
