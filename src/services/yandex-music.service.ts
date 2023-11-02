@@ -2,6 +2,8 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import axios from 'axios';
 import { IMusicService } from './service.interface.js';
+import natural from 'natural';
+const { JaroWinklerDistance } = natural;
 
 @Injectable()
 export class YandexMusicService implements IMusicService {
@@ -28,9 +30,32 @@ export class YandexMusicService implements IMusicService {
       console.log('Yandex Search Response: ', response.data);
 
       if (response && response.data && response.data.track_url) {
-        if (response.data.artist != artist) {
+        // Перепутаны местами артист и название
+        if (response.data.artist == title && response.data.title == artist) {
+          const old_artist = response.data.artist;
+          response.data.artist = title;
+          response.data.title = old_artist;
+        }
+
+        // Jaro-Winkler Distance учитывает опечатки и небольшие различия в строках
+        const options: natural.JaroWinklerOptions = {
+          ignoreCase: true,
+        };
+
+        const similarity = JaroWinklerDistance(
+          response.data.artist,
+          artist,
+          options,
+        );
+
+        if (similarity == 0) {
           console.log(response.data.artist + ' != ' + artist);
-          throw new Error('Cannot find track');
+          throw new Error(
+            'Found track, but not that: ' +
+              response.data.artist +
+              ' != ' +
+              artist,
+          );
         }
         return response.data.track_url;
       } else {
