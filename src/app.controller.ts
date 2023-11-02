@@ -34,7 +34,7 @@ export class AppController {
       throw new BadRequestException('Parameter platform must be defind');
 
     artist = decodeURIComponent(artist);
-    title = decodeURIComponent(artist);
+    title = decodeURIComponent(title);
 
     switch (to_platform) {
       case 'spotify': {
