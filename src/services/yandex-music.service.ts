@@ -32,9 +32,11 @@ export class YandexMusicService implements IMusicService {
       if (response && response.data && response.data.track_url) {
         // Перепутаны местами артист и название
         if (response.data.artist == title && response.data.title == artist) {
+          console.log('Reverse found', response.data);
           const old_artist = response.data.artist;
           response.data.artist = title;
           response.data.title = old_artist;
+          console.log('Fix: ', response.data);
         }
 
         // Jaro-Winkler Distance учитывает опечатки и небольшие различия в строках
