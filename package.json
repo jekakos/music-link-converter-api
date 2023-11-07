@@ -27,6 +27,7 @@
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
     "axios": "^1.5.1",
+    "cheerio": "^1.0.0-rc.12",
     "he": "^1.2.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",

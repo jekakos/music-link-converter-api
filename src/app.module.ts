@@ -8,6 +8,7 @@ import { CommonService } from './services/common.service.js';
 import { YoutubeMusicService } from './services/youtube.service.js';
 import { RequestLoggingMiddleware } from './logger/request-logging.middleware.js';
 import { AppleMusicService } from './services/apple-music.service.js';
+import { TitleService } from './services/title.service.js';
 
 @Module({
   imports: [ConfigModule.forRoot()],
@@ -18,6 +19,7 @@ import { AppleMusicService } from './services/apple-music.service.js';
     YandexMusicService,
     YoutubeMusicService,
     AppleMusicService,
+    TitleService,
   ],
 })
 export class AppModule {

@@ -7,7 +7,7 @@ export class CommonService {
     if (link.includes('music.yandex')) return 'yandex-music';
     if (link.includes('music.youtube')) return 'youtube-music';
     if (link.includes('music.apple.com')) return 'apple-music';
-
+    if (link.includes('youtu.be')) return 'youtube-video';
     throw Error('Platform not detected');
   }
 }

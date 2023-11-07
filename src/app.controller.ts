@@ -13,6 +13,7 @@ import { CommonService } from './services/common.service.js';
 import { Response } from 'express';
 import { YoutubeMusicService } from './services/youtube.service.js';
 import { AppleMusicService } from './services/apple-music.service.js';
+import { TitleService } from './services/title.service.js';
 
 @Controller()
 export class AppController {
@@ -22,6 +23,7 @@ export class AppController {
     private readonly yandexService: YandexMusicService,
     private readonly youtubeService: YoutubeMusicService,
     private readonly appleService: AppleMusicService,
+    private readonly titleService: TitleService,
   ) {}
 
   @Get('search_track')
@@ -86,6 +88,11 @@ export class AppController {
       case 'apple-music':
         {
           info = await this.appleService.getTrackInfo(link);
+        }
+        break;
+      case 'youtube-video':
+        {
+          info = await this.titleService.getTrackInfo(link, from_platform);
         }
         break;
     }
