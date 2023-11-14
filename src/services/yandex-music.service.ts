@@ -24,8 +24,8 @@ export class YandexMusicService implements IMusicService {
       const response = await axios({
         method: 'GET',
         url: url,
-      }).catch(() => {
-        throw new ForbiddenException('API not available');
+      }).catch((error) => {
+        throw new Error(error);
       });
       console.log('Yandex Search Response: ', response.data);
 
@@ -61,7 +61,7 @@ export class YandexMusicService implements IMusicService {
         }
         return response.data.track_url;
       } else {
-        return null;
+        throw new Error('Not found');
       }
     } catch (error) {
       console.error('Error fetching track from Yandex Music:', error);

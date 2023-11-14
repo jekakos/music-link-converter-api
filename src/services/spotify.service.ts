@@ -45,15 +45,15 @@ export class SpotifyService implements IMusicService {
 
     const query = `${artist} - ${title}`;
     console.log('Spotify query: ', query);
-    console.log('Token: ', this.accessToken);
+    //console.log('Token: ', this.accessToken);
 
     try {
       const result = await this.spotifyApi.searchTracks(query);
-      console.log('Results: ', result.body);
+      //console.log('Results: ', result.body);
       if (result && result.body.tracks && result.body.tracks.items.length > 0) {
         return result.body.tracks.items[0].external_urls.spotify;
       } else {
-        return null;
+        throw new Error('Not found');
       }
     } catch (err) {
       console.error('Error searching tracks:', err);

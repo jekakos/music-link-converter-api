@@ -69,6 +69,7 @@ export class AppleMusicService implements IMusicService {
       }
     } catch (error) {
       console.error('Error searching tracks:', error);
+      throw new Error('Not found');
     }
     return null;
   }

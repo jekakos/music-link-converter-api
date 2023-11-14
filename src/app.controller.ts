@@ -37,22 +37,46 @@ export class AppController {
 
     artist = decodeURIComponent(artist);
     title = decodeURIComponent(title);
+    let link;
 
-    switch (to_platform) {
-      case 'spotify': {
-        return await this.spotifyService.searchTrack(artist, title);
+    try {
+      switch (to_platform) {
+        case 'spotify':
+          {
+            link = await this.spotifyService.searchTrack(artist, title);
+          }
+          break;
+        case 'yandex-music':
+          {
+            link = await this.yandexService.searchTrack(artist, title);
+          }
+          break;
+        case 'youtube-music':
+          {
+            link = await this.youtubeService.searchTrack(artist, title);
+          }
+          break;
+        case 'apple-music':
+          {
+            link = await this.appleService.searchTrack(artist, title);
+          }
+          break;
+        default:
+          throw new NotFoundException(
+            `Platform "${to_platform}" is not supported.`,
+          );
       }
-      case 'yandex-music': {
-        return await this.yandexService.searchTrack(artist, title);
-      }
-      case 'youtube-music': {
-        return await this.youtubeService.searchTrack(artist, title);
-      }
-      case 'apple-music': {
-        return await this.appleService.searchTrack(artist, title);
-      }
+    } catch (error) {
+      throw new NotFoundException({
+        statusCode: 404,
+        message: `Cannot find track on ${to_platform}`,
+        error: 'Not Found',
+        platform: to_platform,
+        artist: artist,
+        title: title,
+      });
     }
-    throw new NotFoundException('Cannot find platform ' + to_platform);
+    return link;
   }
 
   @Get('get_link')
@@ -100,22 +124,32 @@ export class AppController {
     if (!info || !info.artist || !info.title)
       throw new NotFoundException('Cannot find track info');
 
-    switch (to_platform) {
-      case 'spotify': {
-        return await this.spotifyService.searchTrack(info.artist, info.title);
+    try {
+      switch (to_platform) {
+        case 'spotify': {
+          return await this.spotifyService.searchTrack(info.artist, info.title);
+        }
+        case 'yandex-music': {
+          return await this.yandexService.searchTrack(info.artist, info.title);
+        }
+        case 'youtube-music': {
+          return await this.youtubeService.searchTrack(info.artist, info.title);
+        }
+        case 'apple-music': {
+          return await this.appleService.searchTrack(info.artist, info.title);
+        }
       }
-      case 'yandex-music': {
-        return await this.yandexService.searchTrack(info.artist, info.title);
-      }
-      case 'youtube-music': {
-        return await this.youtubeService.searchTrack(info.artist, info.title);
-      }
-      case 'apple-music': {
-        return await this.appleService.searchTrack(info.artist, info.title);
-      }
+    } catch (error) {
+      throw new NotFoundException({
+        statusCode: 404,
+        message: `Cannot find track on ${to_platform}`,
+        error: 'Not Found',
+        platform: to_platform,
+        artist: info.artist,
+        title: info.title,
+      });
     }
-
-    throw new NotFoundException('Cannot find platform ' + to_platform);
+    return null;
   }
 
   @Get('get_redirect_link')

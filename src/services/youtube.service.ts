@@ -45,8 +45,9 @@ export class YoutubeMusicService implements IMusicService {
       }
     } catch (error) {
       console.error('Error searching tracks:', error);
+      throw new Error('Not found');
     }
-    return null;
+    throw new Error('Not found');
   }
 
   async getTrackInfo(
