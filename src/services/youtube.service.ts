@@ -63,19 +63,33 @@ export class YoutubeMusicService implements IMusicService {
       const query = `${videoId}`;
       const info = await this.search(query);
       console.log('Youtube info: ', info);
-      if (info && 'snippet' in info && info.snippet.title) {
-        const cleanTitle = this.cleanTrackTitle(info.snippet.title);
-        console.log('Title: ', cleanTitle);
-        const titleMatch = cleanTitle.match(/(.+) - (.+)/);
+      if (info && 'snippet' in info) {
+        let cleanTitle = '';
+        if (info.snippet.title) {
+          cleanTitle = this.cleanTrackTitle(info.snippet.title);
+          console.log('Title: ', cleanTitle);
+          //const titleMatch = cleanTitle.match(/(.+) - (.+)/);
+          if (!cleanTitle) {
+            throw new Error('Unexpected title format');
+          }
+        }
 
-        console.log('Match:', titleMatch);
-        if (!titleMatch) {
-          throw new Error('Unexpected title format');
+        let cleanArtist = '';
+        if (info.snippet.channelTitle) {
+          cleanArtist = this.cleanTrackTitle(info.snippet.channelTitle).replace(
+            ' - Topic',
+            '',
+          );
+          console.log('Artist: ', cleanArtist);
+          //const titleMatch = cleanTitle.match(/(.+) - (.+)/);
+          if (!cleanArtist) {
+            throw new Error('Unexpected artist format');
+          }
         }
 
         return {
-          artist: titleMatch[1].trim(),
-          title: titleMatch[2].trim(),
+          artist: cleanArtist,
+          title: cleanTitle,
         };
       }
     } catch (error) {
@@ -90,7 +104,8 @@ export class YoutubeMusicService implements IMusicService {
     //title = title.replace(/&amp;/g, '&');
 
     // Удаление всех символов, которые не являются буквами, цифрами, пробелами, тире
-    title = title.replace(/[^a-zA-Z0-9 \-'`&]/g, '');
+    //title = title.replace(/[^a-zA-Z0-9 \-'`&]/g, '');
+    title = title.trim();
 
     return title;
   }
